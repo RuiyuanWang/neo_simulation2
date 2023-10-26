@@ -10,10 +10,11 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node, PushRosNamespace
 from launch.conditions import IfCondition
+from launch_ros.substitutions import FindPackageShare
 
 
-MY_NEO_ROBOT = os.environ['MY_ROBOT']
-MY_NEO_ENVIRONMENT = os.environ['MAP_NAME']
+MY_NEO_ROBOT = os.environ.get('MY_ROBOT', "mpo_700")
+MY_NEO_ENVIRONMENT = os.environ.get('MAP_NAME', "neo_workshop")
 
 def generate_launch_description():
     use_multi_robots = LaunchConfiguration('use_multi_robots', default='False')
@@ -37,6 +38,17 @@ def generate_launch_description():
             param_file_name))
 
     nav2_launch_file_dir = os.path.join(get_package_share_directory('neo_nav2_bringup'), 'launch')
+
+    this_pkg_share = FindPackageShare(package='neo_simulation2').find('neo_simulation2')
+    default_rviz_config_path = this_pkg_share +'/rviz/nav2_carto.rviz'
+
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        arguments=['-d', default_rviz_config_path],
+        parameters=[{'use_sim_time': use_sim_time}],
+        output='screen')    
 
     return LaunchDescription([
         IncludeLaunchDescription(
@@ -65,4 +77,6 @@ def generate_launch_description():
             launch_arguments={'namespace': namespace,
                               'use_sim_time': use_sim_time,
                               'params_file': param_dir}.items()),
+
+        rviz_node,
         ])

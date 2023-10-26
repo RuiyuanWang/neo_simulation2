@@ -13,8 +13,8 @@ import xml.etree.ElementTree as ET
 import xacro
 import time
 
-MY_NEO_ROBOT = os.environ['MY_ROBOT']
-MY_NEO_ENVIRONMENT = os.environ['MAP_NAME']
+MY_NEO_ROBOT = os.environ.get('MY_ROBOT', "mpo_700")
+MY_NEO_ENVIRONMENT = os.environ.get('MAP_NAME', "neo_workshop")
 MY_NO_ROBOTS = os.environ['Number_of_Robots']
 
 def generate_launch_description():

@@ -4,6 +4,7 @@ project(neo_simulation2)
 find_package(ament_cmake REQUIRED)
 
 install(DIRECTORY launch
+  rviz
   configs
   maps
   worlds
